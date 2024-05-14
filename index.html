@@ -1,32 +1,44 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title></title>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
-	<style>
-	body{
-		background-color: antiquewhite;
-		height: auto;
-	}
-	</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,maximum-scale=1.0,user-scalable=no,initial-scale=1.0">
 </head>
 <body>
-	<svg width="auto" height="auto" xmlns="http://www.w3.org/2000/svg" style="border: 1px solid #000;padding: 20px;" >
-	    <text x="25%" y="100" font-size="60" stroke="#fff" stroke-width="40" fill="#fff">
-	        Desktop
-	    </text>
-		<text x="25%" y="100" font-size="60" stroke="#ffaa00" stroke-width="20" fill="#ffaa00">
-		    Desktop
-		</text>
-		<text x="25%" y="100" font-size="60" stroke="#000" stroke-width="5" fill="#000">
-		    Desktop
-		</text>
-	</svg>
-	<script>
-		
-	</script>
+	<button onclick="button()">播放</button>
+	<div id="box"></div>
+  <script type="text/javascript">
+      const recognition = new webkitSpeechRecognition();
+      recognition.lang = "zh-CN";
+	  // recognition.continuous = true;
+	  const ws = new WebSocket("wss://settool.top/wss");
+	  ws.onopen = function(e){
+	  	ws.send("ssss");
+	  };
+	  ws.onmessage = function (e){
+		  console.log(e);
+	  }
+	  const src = "../mp3/1.mp3";
+	  const audio = new Audio(src);
+      function button(){
+		  
+		  recognition.start(); // 开始语音识别 
+		  
+		   // recognition.stop(); // 停止语音识别
+		  audio.play();
+	  }
+	  
+	  recognition.onresult = (event) => {
+	    const result = event.results[event.results.length - 1];
+	    console.log(result[0].transcript);
+		alert(result[0].transcript);
+		ws.send(result[0].transcript);
+		document.querySelector("#box").innerHTML = result[0].transcript;
+	  };
+	  recognition.onerror = function(e) {  
+		  document.querySelector("#box").innerHTML = e.error;
+	    console.error('Error occurred. Error code: ' + e.error);  
+	  }; 
+   </script>
 </body>
 </html>
